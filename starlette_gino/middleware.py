@@ -1,7 +1,6 @@
 import typing
 
 from gino import Gino
-from gino.dialects.asyncpg import NullPool
 from sqlalchemy.engine.url import URL
 
 from .types import Scope, Receive, Send, ASGIApp, Message
@@ -38,6 +37,12 @@ class DatabaseMiddleware:
             await inner_app(scope, receiver, send)
             return
 
-        self.kwargs.update({'pool_class': NullPool})
-        await self.database_startup()
-        await self.app(scope, receive, send)
+        if scope['type'] == 'http':
+            scope['connection'] = await self.db.acquire(lazy=True)
+            try:
+                await self.app(scope, receive, send)
+            finally:
+                conn = scope.pop('connection', None)
+                if conn is not None:
+                    await conn.release()
+            return
