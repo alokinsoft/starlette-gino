@@ -27,7 +27,7 @@ setup(
     name="starlette-gino",
     python_requires=">=3.6",
     version=get_version("starlette_gino"),
-    url="https://github.com/ashinabraham/starlette-gino",
+    url="https://github.com/alokinsoft/starlette-gino",
     author="Ashin E Abraham",
     license="MIT",
     author_email="ashineabraham@gmail.com",
