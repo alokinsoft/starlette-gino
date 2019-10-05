@@ -17,13 +17,10 @@ class DatabaseMiddleware:
         self.kwargs = kwargs
 
     async def database_startup(self) -> None:
-        print("Starting Database")
         if not self.engine:
             self.engine = await self.db.set_bind(self.database_url, **self.kwargs)
-        print(self.engine)
 
     async def database_shutdown(self) -> None:
-        print("Closing Database")
         await self.db.pop_bind().close()
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
